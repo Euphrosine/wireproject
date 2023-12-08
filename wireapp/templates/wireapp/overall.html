@@ -1,0 +1,67 @@
+{% extends 'partials/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h4 id="wire_table">Table</h4>
+    <table class="table table-bordered">
+        <thead style="background-color: rgb(92, 248, 183); color: black;">
+            <tr>
+                <th>DateTime</th>
+                <th>Level</th>
+                <th>status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in wire_data %}
+                <tr>
+                    <td>{{ entry.datetime }}</td>
+                    <td>{{ entry.level }}</td>
+                    <td>{{ entry.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table><br><br>
+    <h4 id="wire_chart">Chart</h4>
+    <canvas id="weatherChart" width="600" height="300"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('weatherChart').getContext('2d');
+    
+            var data = {
+                labels: [{% for entry in wire_data %}'{{ entry.datetime }}',{% endfor %}],
+                datasets: [
+                    {
+                        label: 'Level',
+                        data: [{% for entry in wire_data %}{{ entry.level }},{% endfor %}],
+                        borderColor: 'rgb(37,37,39)',
+                        borderWidth: 1,
+                        fill: false
+                    },
+
+                ]
+            };
+    
+            var options = {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
+    
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+        });
+    </script>
+    
+</div>
+{% endblock %}
